@@ -60,6 +60,7 @@ void explode( string input, string match , char sep , string &val ) {
     	gsub( temp , "\n" , "");
 
     	//findAndReplaceAll( temp , match , "");
+    	
     	float aNumero = strtof( temp.c_str() , 0);
         //cout << "Temp" << aNumero << "\n";
         val = temp;
