@@ -92,11 +92,91 @@ int explode50( string input, char sep , int counter ){
     return counter;
 }
 
+struct Login  
+ {
+ 	string username;
+ 	string password;
+ 	string host;
+ 	string database;
+ }; 
+
+
+ string Jsonread( string data ){
+
+    
+
+    return "";
+
+ }
+
+
+struct Login Config( string file ){
+
+	int sfd = open("./login.txt" , O_RDONLY | O_NOCTTY );
+	char buf[1024];
+	int res = read( sfd , buf , 1024); // lire le buffer
+    buf[res] = 0; // met le caractere fin de chaine a la fin du buffer
+
+    //cout << buf << '\n';
+
+    istringstream iss( (string)buf );
+
+    struct Login conf;
+
+    do
+    {
+        string subs;
+        string key = "";
+        string value = "";
+
+        iss >> subs;
+        //cout << "Substring: " << subs << endl;
+
+        int isvalue = false;
+
+        for( int i = 0 ; i < subs.length() ; i++ ){
+
+        	//cout << subs[i];
+
+        	if ( subs[i] ==  ';' ){
+        		//cout << "ok";
+        		cout << key << " = " <<  value << " owo\n";
+        		key = "";
+        		value = "";
+        		isvalue = false;
+
+        		if( (key.compare(key)) == 0){ 
+        			cout << "user " << " = " <<  value << " owo\n";
+        		}
+        	}
+        	if ( subs[i] == '=' ){
+        		isvalue = true;
+        	}else if (isvalue == false){
+        		key = key + subs[i];
+        	}else{
+        		value = value + subs[i];
+        	}
+
+
+    	}
+
+    	//cout << subs;
+
+    } while (iss);
+
+	//https://stackoverflow.com/questions/236129/how-do-i-iterate-over-the-words-of-a-string
+
+	return conf;
+
+}
+
 
 
 int main(){
 
 	MYSQL *conn;
+
+	Login config = Config( "" );
 
 	if ((conn = mysql_init(NULL)) == NULL){
 		fprintf(stderr, "Could not init DB\n");
