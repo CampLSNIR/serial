@@ -112,7 +112,7 @@ struct Login
 
 struct Login Config( string file ){
 
-	int sfd = open("./login.txt" , O_RDONLY | O_NOCTTY );
+	int sfd = open( file.c_str() , O_RDONLY | O_NOCTTY );
 	char buf[1024];
 	int res = read( sfd , buf , 1024); // lire le buffer
     buf[res] = 0; // met le caractere fin de chaine a la fin du buffer
@@ -141,13 +141,23 @@ struct Login Config( string file ){
         	if ( subs[i] ==  ';' ){
         		//cout << "ok";
         		cout << key << " = " <<  value << " owo\n";
+
+        		if( key == "host"){ 
+        			conf.host = value;
+        		}else if( key == "username"){ 
+        			conf.username = value;
+        		}else if( key == "password"){ 
+        			conf.password = value;
+        		}else if( key == "database"){ 
+        			conf.database = value;
+        		}
+
+        		//pas genial conf[key] serait parfait mais ..
+
         		key = "";
         		value = "";
         		isvalue = false;
 
-        		if( (key.compare(key)) == 0){ 
-        			cout << "user " << " = " <<  value << " owo\n";
-        		}
         	}
         	if ( subs[i] == '=' ){
         		isvalue = true;
@@ -176,13 +186,13 @@ int main(){
 
 	MYSQL *conn;
 
-	Login config = Config( "" );
+	Login config = Config( "./login.txt" );
 
 	if ((conn = mysql_init(NULL)) == NULL){
 		fprintf(stderr, "Could not init DB\n");
 		return EXIT_FAILURE;
 	}
-	if (mysql_real_connect(conn, "localhost", "bts", "snir", "bts_tutorial", 0, NULL, 0) == NULL){
+	if (mysql_real_connect(conn, config.host.c_str(), config.username.c_str() , config.password.c_str() , config.database.c_str() , 0, NULL, 0) == NULL){
 		fprintf(stderr, "DB Connection Error\n");
 		return EXIT_FAILURE;
 	}
