@@ -186,7 +186,7 @@ int main(){
 
 	MYSQL *conn;
 
-	Login config = Config( "./login.txt" );
+	Login config = Config( "./config" );
 
 	if ((conn = mysql_init(NULL)) == NULL){
 		fprintf(stderr, "Could not init DB\n");
@@ -204,7 +204,7 @@ int main(){
 
 	const int BAUDRATE = 115200;
 	
-	int sfd = open("/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_066BFF323338424E43102325-if02" , O_RDONLY | O_NOCTTY );// ouvrir le fichier 
+	int sfd = open("/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0671FF323338424E43012758-if02" , O_RDONLY | O_NOCTTY );// ouvrir le fichier 
 	
 	if( sfd == -1 ){ // verifier si il y a une erreur
 		printf( "ERROR %d\n" , errno);
@@ -245,6 +245,8 @@ int main(){
 
         string humidie = "NULL";
 
+        int lignes = 0;
+
         while( true ){
 
 
@@ -257,7 +259,11 @@ int main(){
             explode( (string)buf , "Hum[0]" , '\n' , humidie );
             explode( (string)buf , "Press[1]" , '\n' , pression );
 
-            if( timestamp > lasttimestamp + 3 ){
+            string str = (string)buf;
+
+            //if( timestamp > lasttimestamp + 3 ){ // req sql toute les 3 sec
+            
+           	if( lignes > 50 ){
             	lasttimestamp = std::time(0);
 
             	string str = string ("INSERT INTO Mesures ( degres , humidie , pression ) VALUES ( ") + temperature + string(" , ") + humidie + string(" , ") + pression + string(" )");
@@ -269,7 +275,13 @@ int main(){
 					
 					fprintf(stderr, "\n");
 				}
+
+				return 0; // fin du prog
             }
+
+            
+
+            cout << lignes << " : " << buf << "\n";
         }
     }
     
