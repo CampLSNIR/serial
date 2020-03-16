@@ -259,10 +259,8 @@ int main(){
             explode( (string)buf , "Hum[0]" , '\n' , humidie );
             explode( (string)buf , "Press[1]" , '\n' , pression );
 
-            string str = (string)buf;
-
             //if( timestamp > lasttimestamp + 3 ){ // req sql toute les 3 sec
-            
+
            	if( lignes > 50 ){
             	lasttimestamp = std::time(0);
 
@@ -278,10 +276,6 @@ int main(){
 
 				return 0; // fin du prog
             }
-
-            
-
-            cout << lignes << " : " << buf << "\n";
         }
     }
     
