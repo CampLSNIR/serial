@@ -203,16 +203,16 @@ int main(){
 	Login config = Config( "./config" );
 
 	if ((conn = mysql_init(NULL)) == NULL){
-        cout << formatDate() << " " << stderr << "Could not init DB" << "\n";
+        cout << formatDate() << " " << "Could not init DB" << "\n";
 		return EXIT_FAILURE;
 	}
 	if (mysql_real_connect(conn, config.host.c_str(), config.username.c_str() , config.password.c_str() , config.database.c_str() , 0, NULL, 0) == NULL){
-        cout << formatDate() << " " << stderr << "DB Connection Error" << "\n";
+        cout << formatDate() << " " << "DB Connection Error" << "\n";
 		return EXIT_FAILURE;
 	}
 	
 	if (mysql_query(conn, "CREATE TABLE IF NOT EXISTS `Mesures` (id INT PRIMARY KEY NOT NULL auto_increment  , DATE time NOT NULL DEFAULT CURRENT_TIMESTAMP,  degres FLOAT , humidie FLOAT , pression FLOAT );") != 0){
-        cout << formatDate() << " " << stderr << "Query Failure" << "\n" ;
+        cout << formatDate() << " " << "Query Failure" << "\n" ;
 		return EXIT_FAILURE;
 	}
 
