@@ -140,7 +140,7 @@ struct Login Config( string file ){
 
         	if ( subs[i] ==  ';' ){
         		//cout << "ok";
-        		cout << key << " = " <<  value << "\n";
+        		//cout << key << " = " <<  value << "\n";
 
         		if( key == "host"){ 
         			conf.host = value;
@@ -181,6 +181,20 @@ struct Login Config( string file ){
 }
 
 
+char* formatDate(){
+
+
+    std::time_t dat = std::time(0);
+
+    char *datechar = new char[20];
+
+    strftime( datechar, 20, "%Y-%m-%d %H:%M:%S", localtime(&dat));
+
+    datechar[20] = 0;
+
+    return datechar;
+}
+
 
 int main(){
 
@@ -189,16 +203,16 @@ int main(){
 	Login config = Config( "./config" );
 
 	if ((conn = mysql_init(NULL)) == NULL){
-		fprintf(stderr, "Could not init DB\n");
+        cout << formatDate() << " " << stderr << "Could not init DB" << "\n";
 		return EXIT_FAILURE;
 	}
 	if (mysql_real_connect(conn, config.host.c_str(), config.username.c_str() , config.password.c_str() , config.database.c_str() , 0, NULL, 0) == NULL){
-		fprintf(stderr, "DB Connection Error\n");
+        cout << formatDate() << " " << stderr << "DB Connection Error" << "\n";
 		return EXIT_FAILURE;
 	}
 	
 	if (mysql_query(conn, "CREATE TABLE IF NOT EXISTS `Mesures` (id INT PRIMARY KEY NOT NULL auto_increment  , DATE time NOT NULL DEFAULT CURRENT_TIMESTAMP,  degres FLOAT , humidie FLOAT , pression FLOAT );") != 0){
-		fprintf(stderr, "Query Failure\n");
+        cout << formatDate() << " " << stderr << "Query Failure" << "\n" ;
 		return EXIT_FAILURE;
 	}
 
@@ -207,8 +221,7 @@ int main(){
 	int sfd = open("/dev/serial/by-id/usb-STMicroelectronics_STM32_STLink_0671FF323338424E43012758-if02" , O_RDONLY | O_NOCTTY );// ouvrir le fichier 
 	
 	if( sfd == -1 ){ // verifier si il y a une erreur
-		printf( "ERROR %d\n" , errno);
-		printf( "%s\n" , strerror(errno) );
+        cout << formatDate() << " " << "ERROR " << (int)errno << " " <<  strerror(errno) << "\n" ;
 		return (-1);
     }else{
         struct termios configTerm;
@@ -231,13 +244,13 @@ int main(){
         bool newline = false;
         int counter = 0;
 
-        cout << "Port série ouvert en lecture seule" << "\n"; // port ouvert avec succes 
+        //cout << "Port série ouvert en lecture seule" << "\n"; // port ouvert avec succes 
         
        	std::time_t timestamp = std::time(0);
 
        	std::time_t lasttimestamp = std::time(0);
 
-        cout << timestamp << "\n";
+        //cout << timestamp << "\n";
 
         string temperature = "NULL";
 
@@ -266,12 +279,10 @@ int main(){
 
             	string str = string ("INSERT INTO Mesures ( degres , humidie , pression ) VALUES ( ") + temperature + string(" , ") + humidie + string(" , ") + pression + string(" )");
            		
-           		cout << str << "\n";
+           		//cout << str << "\n";
 				
            		if (mysql_query(conn, str.c_str() ) != 0){
-					fprintf(stderr, "Query Failure\n");
-					
-					fprintf(stderr, "\n");
+					cout << formatDate() << " " << stderr << "Query Failure" << "\n" ;
 				}
 
 				return 0; // fin du prog
