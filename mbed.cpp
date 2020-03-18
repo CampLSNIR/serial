@@ -140,7 +140,7 @@ struct Login Config( string file ){
 
         	if ( subs[i] ==  ';' ){
         		//cout << "ok";
-        		cout << key << " = " <<  value << " owo\n";
+        		cout << key << " = " <<  value << "\n";
 
         		if( key == "host"){ 
         			conf.host = value;
